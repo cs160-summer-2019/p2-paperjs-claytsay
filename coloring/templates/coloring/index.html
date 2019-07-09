@@ -50,7 +50,8 @@
 
 			// color palette
 			var cp = {
-				history: ["#000000"], // black selected by default
+				// history: ["#000000"], // black selected by default
+        history: ["#003262", "#3B7EA1", "#FDB515", "#C4820E"],
 				options: [],
 				$container: $('#color-palette')
 			}
@@ -59,13 +60,31 @@
 			// you may also add code outside of the function (e.g., global variables)
 			function myGradientInteraction(){
 				var tool = new paper.Tool();
+        
+        // This is pretty much copied from the Paper.js documentation
+        var rectangle = new paper.Rectangle(new paper.Point(250, 300), new paper.Size(200, 150));
+        var path = new paper.Path.Rectangle(rectangle);
+        path.fillColor = "#3B7EA1";
 
+        var startPoint;
+        var endPoint;
 				tool.onMouseDown = function (event) {
+          startPoint = event.point;
 
 				}
 
 				tool.onMouseUp = function (event) {
-					
+					endPoint = event.point;
+          path.fillColor = {
+            gradient: {
+              stops: [
+                cp.history[cp.history.length - 1], 
+                cp.history[cp.history.length - 2]
+              ]
+            },
+            origin: startPoint,
+            destination: endPoint
+          }
 				}
 			}
 
@@ -116,7 +135,7 @@
 
 				paper.project.importSVG(mandala.filePath, function(item) { 
 					mandala.item = item._children["design-freepik"];
-				    paper.project.insertLayer(0,mandala.item);
+				    paper.project.insertLayer(0, mandala.item);
 
 				    if (custom) {
 				    	myCustomInteraction();	
@@ -140,8 +159,7 @@
 		}
 	</script>
 </head>
-<body>	
-
+<body>
 	<canvas id="myCanvas" width="750px" height="750px"></canvas>
 	<div id="color-palette"></div>
 </body>
